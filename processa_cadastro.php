@@ -12,22 +12,46 @@ $email = trim($_POST['email']);
 $senha = $_POST['senha'];
 $tipoPerfil = trim($_POST['tipo_perfil']);
 
-$_verificaEmail = "SELECT id from tbl_usuarios where email : email";
-$preparaConsulta = $cn=prepare($_verificaEmail);
+$_verificaEmail = "SELECT id from tbl_usuarios where email = :email";
+$preparaConsulta = $cn->prepare($_verificaEmail);
 // A seta serve passar dados através de mpétodo.
-$preparaConsulta->bindvalue(':email', $email, PDP::PARAM_STR);
+$preparaConsulta->bindvalue(':email', $email, PDO::PARAM_STR);
 $preparaConsulta->execute();
-}
+
 
 // Se tiver alguma dessas informações apresentadas acima
-if($preparaConsulta->rowCount > 0){
+if($preparaConsulta->rowCount() > 0){
     echo "<script>
-        alert("O email informado já está cadastrado! Tente fazr o login");
-        widowns.location.href="login.php";
+        alert('O email informado já está cadastrado! Tente fazer o login');
+        windows.location.href='login.php';
          </script>";
 
 
+    }
+
+else{
+    $senhahash = password_hash($senha, PASSWORD_DEFAULT);
+    $inserirusuario = "INSERT INTO tbl_usuarios(nome, email, senha, tipo_perfil)
+    values (:nome, :email, :senha, :tipo_perfil)";
+
+        try{
+        $prepararinsert = $cn->prepare($inserirusuario);
+        $prepararinsert->bindvalue(':nome', $nome);
+        $prepararinsert->bindvalue(':email', $email);
+        $prepararinsert->bindvalue(':senha', $senhahash);
+        $prepararinsert->bindvalue(':tipo_perfil', $tipoPerfil);
+        $prepararinsert->execute();
+        
+        echo "<script>
+                alert('Usuário cadastrado com sucesso! Clique Ok para voltar a tela de login.')
+                window.location.href = 'login.php'
+            </script>";
+            }
+
+        catch(PDOException $erro){
+            echo "Ocorreu um erro!".$erro->getMessage();
+        }
+    }
 }
 
-
-?>
+?>  
