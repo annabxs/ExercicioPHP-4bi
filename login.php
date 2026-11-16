@@ -27,10 +27,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
         $usuariologado = $prepararlogin->fetch(PDO::FETCH_ASSOC);
 
         if($usuariologado && password_verify($senha, $usuariologado["senha"])){
-            $_SESSION[id] = $usuariologado["usuario_id"];
-            $_SESSION[nome] = $usuariologado["nome"];
-            $_SESSION[perfil] = $usuariologado["tipo_perfil"];
-            header(location:index.php);
+            $_SESSION["id"] = $usuariologado["usuario_id"];
+            $_SESSION["nome"] = $usuariologado["nome"];
+            $_SESSION["perfil"] = $usuariologado["tipo_perfil"];
+            header("location:index.php");
             exit;
         } else{
             $erro = "Email ou senha inválidos!";
