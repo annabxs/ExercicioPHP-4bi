@@ -12,11 +12,11 @@ $email = trim($_POST['email']);
 $senha = $_POST['senha'];
 $tipoPerfil = trim($_POST['tipo_perfil']);
 
-$_verificaEmail = "SELECT id from tbl_usuarios where email = :email";
+$_verificaEmail = "SELECT usuario_id from tbl_usuarios where email = :email";
 $preparaConsulta = $cn->prepare($_verificaEmail);
 // A seta serve passar dados através de mpétodo.
 $preparaConsulta->bindvalue(':email', $email, PDO::PARAM_STR);
-$preparaConsulta->execute();
+$preparaConsulta->execute(); //ta dando erro aqui ta arrumar
 
 
 // Se tiver alguma dessas informações apresentadas acima

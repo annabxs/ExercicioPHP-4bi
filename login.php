@@ -1,3 +1,45 @@
+<?php
+// verifica se ele está logado
+session_start();
+include "conexao.php";
+
+// ó se o moço/moça ou moçe estiver logado, o sistema muito legal vai mandar ele para o index.php
+if (isset($_SESSION["usuario_id"])){
+    header("location:index.php");
+    exit;
+}
+
+$erro = "";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST"){
+    // ?? Operador ternário = se não houver nada no email, atribuir uma string vazia
+    $email = trim($_POST["email"] ?? "");
+    $senha = $_POST["senha"] ?? "";
+
+    if ($email === "" || $senha === ""){
+        $erro = "Informar usuário ou senha";
+    } else{
+        $loginSQL = "SELECT usuario_id, nome, email, senha FROM tbl_usuarios WHERE email = :email";
+        $prepararlogin = $cn->prepare($loginSQL);
+        // PDO::PARAM_STR tá falando para o banco de dados que esses dados que vão entrar tem que ser tratados como string.
+        $prepararlogin->bindValue(":email", $email, PDO::PARAM_STR);
+        $prepararlogin->execute();
+        $usuariologado = $prepararlogin->fetch(PDO::FETCH_ASSOC);
+
+        if($usuariologado && password_verify($senha, $usuariologado["senha"])){
+            $_SESSION[id] = $usuariologado["usuario_id"];
+            $_SESSION[nome] = $usuariologado["nome"];
+            $_SESSION[perfil] = $usuariologado["tipo_perfil"];
+            header(location:index.php);
+            exit;
+        } else{
+            $erro = "Email ou senha inválidos!";
+        }
+        
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -30,7 +72,8 @@
             <p class="login-subtitle">Bem-vindo de volta! Insira seus dados para continuar.</p>
 
             <!-- Formulário de Login -->
-            <form action="autenticar.php" method="POST" class="login-form">
+             <!-- aqui ele não vai criar outra página para a autenticação, ele vai usar o próprio login.php como direcionado no começo do código -->
+            <form action="login.php" method="POST" class="login-form">
                 <div class="form-group">
                     <label for="email" class="form-label">E-mail</label>
                     <input type="email" id="email" name="email" class="form-input" placeholder="seu@email.com" required>

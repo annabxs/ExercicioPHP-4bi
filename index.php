@@ -1,4 +1,5 @@
 <?php 
+session_start();
 include "conexao.php";
 
 $consultaSQL = "select id, titulo, descricao, salario, localizacao from tbl_vagas";
@@ -49,7 +50,12 @@ $vagas = $preparaVaga->fetchAll();
                     <li><a href="#" class="nav-link">Início</a></li>
                     <li><a href="#vagas" class="nav-link">Vagas</a></li>
                     <!-- Futuramente o PHP do aluno vai controlar se exibe Login ou Painel aqui -->
+                     <?php if(isset($_SESSION["id"])) : ?>
+                    <li class="nav-link">Olá, <?= htmlspecialchars($_SESSION["nome"]); ?></li>
+                    <li><a href="logout.php" class="btn-login">Sair</a></li>
+                    <?php else : ?>
                     <li><a href="login.php" class="btn-login">Entrar / Cadastrar</a></li>
+                    <?php endif; ?>
                 </ul>
             </nav>
         </div>

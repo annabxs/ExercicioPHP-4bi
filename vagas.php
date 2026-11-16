@@ -1,4 +1,5 @@
 <?php
+session_start();
 include "conexao.php";
 // método isset serve para determinar se a variável é null ou notnull. Na linha abaixo, caso o valor for null
 // O ? é um operador ternário que separa a condição (o que vem antes dele), do resultado CASO SEJA VERDADEIRA
@@ -45,7 +46,12 @@ if(!$filtrarVaga){
                 <ul class="nav-menu">
                     <li><a href="index.php" class="nav-link">Início</a></li>
                     <li><a href="index.php#vagas" class="nav-link">Vagas</a></li>
+                    <?php if(isset($_SESSION["id"])) : ?>
+                    <li class="nav-link">Olá, <?= htmlspecialchars($_SESSION["nome"]); ?></li>
+                    <li><a href="logout.php" class="btn-login">Sair</a></li>
+                    <?php else : ?>
                     <li><a href="login.php" class="btn-login">Entrar / Cadastrar</a></li>
+                    <?php endif; ?>
                 </ul>
             </nav>
         </div>
